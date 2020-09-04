@@ -1,0 +1,93 @@
+{% extends parent_template|default:"organizer/base_organizer.html" %}
+
+{% block title %}
+{{ block.super }} - Create Tag
+{% endblock %}
+
+{% block content %}
+<div>
+   <div>
+       <form action="{% url 'organizer_tag_create' %}" method="post"> <!--using form action means what action do in this form,we set u r l name -->
+     {% csrf_token %} <!--you can also use form.as_ul or form.as_table -->
+     {{ form.as_p }}  <!--this is the django build in form,this shorter rather than loop -->
+    <!--  {% for field in form %} --> <!--form is pass from view function,which one use forms.py file -->
+     <!--  {{ field.errors }} -->  <!--we call error variables directly which show all of errors of name field,we don't use a loop -->
+       <!-- <p> {{ field.label_tag }} --> <!--here we using django build in label in place of label define explicitly -->
+        <!-- {{ field }} --> <!--in TagForm the fields are tag,slug -->
+       <!--  {% if field.help_text %} --> <!--if there are any help text in field then display it,help text defined in a form,but we are using ModelForm,django will print the help_text attribute we defined in our Tag model -->
+        <!--    <span class="helptext">{{ field.help_text }}</span>
+         {% endif %} </p>
+      {% endfor %} -->
+     <button type="submit">Create Tag</button>
+ </form>
+
+   </div>
+</div>
+
+{% endblock %}
+
+
+     <!-- {{ form.non_field_errors }} --> <!--we call variables directly which provide the looping behaviour,non_field is build in where shows all error which is not related to field like field combination -->
+    <!--  {{ form.name.errors }} --> <!--we call error variables directly which show all of errors of name field,we don't use a loop -->
+
+        <!-- <label for="id_name">Name:</label> -->
+        <!-- <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label> -->
+       <!-- {{ form.name.label_tag }} --> <!--here we using django build in label in place of label define explicitly -->
+       <!--  {{ form.name }}--> <!--here display previous form name if the user submitted invalid data,we don't need to use if,else condition,django automatically do this -->
+        <!-- <input id="id_name" maxlength="31" name="name" type="text"/> -->
+
+
+     <!-- {{ form.slug.errors }} --> <!--we display all of slug errors using one variable in place of using loop,errors is build in python function -->
+
+        <!-- <label for="id_slug">Slug:</label> -->
+        <!-- <label for="{{ form.slug.id_for_label }}">{{ form.slug.label }}</label> --> <!--using django build in label for slug in place of explicitly define slug label -->
+       <!--  {{ form.slug.label_tag }} --> <!--shortening the code for slug label -->
+       <!--   {{ form.slug }} --> <!--if the user submit wrong or invalid slug then django shows the previous slug value which one user submitted,we don't need to create if else condition,django automatically do this -->
+        <!-- <input id="id_slug" maxlength="31" name="slug" type="text"/> -->
+
+        <!-- <span class="helptext"> --> <!--help text defined in a form,but we are using ModelForm,django will print the help_text attribute we defined in our Tag model -->
+        <!--     {{ form.slug_help_text }} --> <!--here shows slug_help_text if you submit a invalid input,you don't need to use if,else statement -->
+       <!--  </span> -->
+
+<!-- {% if form.non_field_errors %} --> <!-- if there are non field errors means any error not associated with field like an error that arises from a combination of fields or from the form itself -->
+ <!-- <ul class="custom_error_list"> --> <!--non_field_errors is build in python method -->
+     <!-- {% for error in form.non_field_errors %}
+        <li><em>{{ error }}</em></li>
+      {% endfor %}
+  </ul>
+{% endif %} -->
+
+
+<!-- {% if form.name.errors %} --> <!--if there are errors in name attribute in form field,here error is build in python function -->
+  <!-- <ul class="custom_error_list"> -->
+    <!--  {% for error in form.name.errors %} --> <!--display all errors  -->
+       <!--  <li><em>{{ error }}</em></li>
+      {% endfor %}
+  </ul>
+{% endif %} -->
+
+<!-- {% if form.slug.errors %} --> <!--if there are errors in slug attribute in form -->
+ <!-- <ul class="custom_error_list">
+      {% for error in form.slug.errors %} --> <!--display all errors  -->
+       <!--  <li><em>{{ error }}</em></li>
+      {% endfor %}
+  </ul>
+  {% endif %} -->
+
+
+<!-- {% if form.name.value %} --> <!--if the user submits invalid data,the form will now provide the name value the user submitted,django provides the conditional checks for values -->
+<!--   <input id="id_name" maxlength="31" --> <!--here using if condition to provide submitted data back to the user when redisplaying forms -->
+<!--   name="name" type="text" value="{{ form.name.value }}"/>
+{% else %}
+   <input id="id_name" maxlength="31" --> <!--normally it shows empty form -->
+ <!--  name="name" type="text"/>
+{% endif %} -->
+
+<!-- {% if form.slug.value %} --> <!--if the user submits invalid data,the form will now provide the slug value the user submitted -->
+<!--   <input id="id_slug" maxlength="31"
+   name="slug" type="text" value="{{ form.slug.value }}"/>
+{% else %}
+   <input id="id_slug" maxlength="31" --> <!--normally it shows empty form -->
+ <!--  name="slug" type="text"/>
+{% endif %} -->
+

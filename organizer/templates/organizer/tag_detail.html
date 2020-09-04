@@ -1,0 +1,45 @@
+{% extends parent_template|default:"organizer/base_organizer.html" %} <!--we changed the inheritance structure to make our lives easier in the long run,it would be prefarable to use a variable and then provide a default to the variable,it allows the Django Controller the possibility of overriding the templates's inheritence scheme without requiring the developer to specify a base template every time this template is used, extends tag must appear as the first tag in the file -->
+
+<!--here shows the title like 'Startup organizer-Django' -->
+{% block title %}
+{{ block.super }} - {{ tag.name|title }}
+{% endblock %}
+
+{% block content %}
+<!--here using title filter,title filter creates the first letter of tag to capital in each word-->
+<h2> {{ tag.name|title }}  </h2> <!--pass particular a tag variable from view function -->
+
+  <!--if the startups of a tag is exist then it shows,'startup_set' is build in django where we can access all startups of a tag -->
+  {% if tag.startup_set.all %} <!--here check because a Tag object might not have any Startup objects associated with it -->
+
+  <section>
+        <h3>Startup{{ tag.startup_set.count|pluralize }}</h3>
+        <p>
+        Tag is associate with {{ tag.startup_set.count }}startup{{tag.startup_set.count|pluralize }}.  <!--here using count filter where count the number of all startups connected to the tag,,ex: tag is associate with 12 startups,,in pluralize,if there are multiple startups then shows in plural form rather then singular form,count() is faster than all() filter -->
+        </p>
+        <h3>Startups</h3>
+        <ul>
+            <!--list of startups related to a tag,startup_set is build in django(for reverse),access all startups of a tag -->
+            {% for startup in tag.startup_set.all %}
+                <li> <a href="{{ startup.get_absolute_url }}"> {{ startup.name }}</a> </li> <!--using get_absolute method for accessing the detail view of startup,this method defines the detail view in models.py file, we don't need to use filtering to title in startup -->
+            {% endfor %}
+        </ul>
+    </section>
+  {% endif %}
+
+    {% if tag.blog_posts.all %}
+        <section>
+            <h3>Blog Post{{ tag.blog_posts.count|pluralize }}</h3> <!--Ex: 'Blog Post' or 'Blog Posts' -->
+            <ul>
+                <!--list of posts related to a tag,'blog_posts' is related name where we can shows all posts of tag -->
+                {% for post in tag.blog_posts.all %}
+                    <li><a href="{{ post.get_absolute_url }}">{{ post.title|title }}</a></li> <!--using get_absolute method for accessing the detail view of post,this method defines the detail view in models.py file, here using title filter for filtering the title and shows the first letter in capital in each word -->
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if not tag.startup_set.all and not tag.blog_posts.all %}
+        <p>This tag is not related to any content</p>
+    {% endif %}
+{% endblock %}

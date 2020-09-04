@@ -1,0 +1,27 @@
+{% extends parent_template|default:"blog/base_blog.html" %} <!--we changed the inheritance structure to make our lives easier in the long run,it would be prefarable to use a variable and then provide a default to the variable,it allows the Django Controller the possibility of overriding the templates's inheritence scheme without requiring the developer to specify a base template every time this template is used, extends tag must appear as the first tag in the file -->
+
+{% block content %}
+
+{% for post in post_list %} <!--the variable we pass data to is named post_list -->
+  <article>
+      <header> <!--here create link of post_detail page,passes parameter year,month and slug which one uses in u r l file,here pub_date is attribute of Post model class -->
+        <!-- <h2><a href="{ u r l 'blog_post_detail' post.pub_date.year post.pub_date.month post.slug %}">{{ post.title|title }}</a></h2> --> <!--show the post title on title format -->
+         <div>
+             <a href="{% url 'blog_post_create' %}">Write New Blog Post</a> <!--using url name for creating blog post -->
+         </div>
+          <a href="{{ post.get_absolute_url }}">{{ post.title|title }}</a> <!--here using get_absolute method for accessing detail view of post,this method is define on Post model,pass the parameters year,month,slug to urls file -->
+          <p>
+             Written on:
+             <time datetime="{{ post.pub_date|date:"Y-m-d" }}"> <!--this date time format is use for Robot,like 2020-01-02 -->
+                 {{ post.pub_date|date:"l, F j, Y" }} <!--this one is human readable date time format like Thursday,January 2nd,2014 -->
+             </time>
+         </p>
+      </header>
+      <p>{{ post.text|truncatewords:20 }}</p>  <!--any blog posts truncate to 20 words,it removes any newlines from the string,resulting in a single paragraph,don't need to use linebreaks -->
+      <p> <a href="{{ post.get_absolute_url }}">Read more&hellip;</a> </p> <!--&hellip stands for HTML ellipis and will print ... in the browser -->
+  </article>
+  {% empty %}
+     <p><em>No Blog Posts Available</em></p>
+{% endfor %}
+
+{% endblock %}

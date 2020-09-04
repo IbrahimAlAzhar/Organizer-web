@@ -1,0 +1,23 @@
+{% extends parent_template|default:"organizer/base_organizer.html" %}
+<!--in title shows 'Startup organizer- Startups' -->
+{% block title %}
+{{ block.super }} - Startups
+{% endblock %}
+
+{% block content %}
+ <h2>Startup List</h2>
+<div>
+    <a href="{% url 'organizer_startup_create' %}">Create New Startup</a>
+</div>
+<ul>
+    {% for startup in startup_list %} <!--startup_list template variable come from view function -->
+       <li> <!--use the startup_detail link and use startup.slug for identify each startup,on the other hand we can also use get_absolute_url also,slug is a field of Startup model-->
+         <!--  <a href="{ u r l 'organizer_startup_detail' startup.slug  %}">{{ startup.name }}</a> --> <!--take the startup.slug as pk for detail view -->
+         <a href="{{ startup.get_absolute_url }}">{{ startup.name }}</a>  <!--get_absolute method in Startup model defines the detail view of startup,this method return the slug as kwargs to identify exact startup detail view -->
+       </li>
+     {% empty %} <!--using empty tag for checking if there are no startup available -->
+       <li><em>No Startups Available</em></li>
+    {% endfor %}
+</ul>
+{% endblock %}
+

@@ -1,0 +1,23 @@
+ {% extends parent_template|default:"organizer/base_organizer.html" %} <!--we changed the inheritance structure to make our lives easier in the long run,it would be prefarable to use a variable and then provide a default to the variable,it allows the Django Controller the possibility of overriding the templates's inheritence scheme without requiring the developer to specify a base template every time this template is used, extends tag must appear as the first tag in the file -->
+    <!--the block.super allows us to refer to what exists in the parent block,prints 'Startup Organizer - Tag List' -->
+
+ {% block title %}
+    {{ block.super }} - Tag List
+ {% endblock %}
+
+ {% block content %}
+    <h2>Tag List</h2>
+    <div>
+        <a href="{% url 'organizer_tag_create' %}">Create New Tag</a> <!--using url name for creating link -->
+    </div>
+    <ul>
+        {% for tag in tag_list %} <!--passing tag_list variable from view function through context which contains all of tags-->
+           <li> <!--using tag's slugfield,use the tag_detail link and use tag.slug for identify each tag,on the other hand we can also use get_absolute_url also-->
+              <!-- <a href="{ u r l 'organizer_tag_detail' tag.slug %}">{{ tag.name|title }}</a> --> <!--title template filter that we use to correctly capitalize the text.here shows the tag name as a title,because here use title filter which shows the first letter of word in capital -->
+              <a href="{{ tag.get_absolute_url }}">{{ tag.name|title }}</a> <!--here using get_absolute method which define the detail view of tag in models.py file -->
+           </li>
+         {% empty %} <!--if the list is empty -->
+           <li><em>There are currently no Tags available.</em></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

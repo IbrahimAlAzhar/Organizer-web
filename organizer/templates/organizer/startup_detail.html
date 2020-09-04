@@ -1,0 +1,51 @@
+{% extends parent_template|default:"organizer/base_organizer.html" %} <!--we changed the inheritance structure to make our lives easier in the long run,it would be prefarable to use a variable and then provide a default to the variable,it allows the Django Controller the possibility of overriding the templates's inheritence scheme without requiring the developer to specify a base template every time this template is used, extends tag must appear as the first tag in the file -->
+    <!--the block.super allows us to refer to what exists in the parent block,prints 'Startup Organizer - Jambon Software' -->
+ {% block title %}
+    {{ block.super }} - {{ startup.name|title }}
+ {% endblock %}
+
+ {% block content %}
+  <article>
+      <h2>{{ startup.name }}</h2> <!--startup is pass from view function -->
+      <dl>
+          <dt>Date Founded</dt>
+            <dd>{{ startup.founded_date}}</dd>  <!--own customize date time format using date filter,ex: "January 18th,2013" -->
+            <!--  <dd>{{ startup.founded_date }}</dd> -->
+          <dt>Website</dt>
+          <dd>{{ startup.website|urlize }}</dd> <!--here using urlize filter which one use nofollow attribute,this attribute telling search engines that spam links are not official -->
+          <dt>Contact</dt>
+            <dd>{{ startup.contact }}</dd>
+
+          <dt>Tag{{ startup.tags.count|pluralize }}</dt> <!--shows tag or tags,count the tag of a startup -->
+           {% for tag in startup.tags.all %} <!--all tags of a startup -->
+             <dd> <a href="{{ tag.get_absolute_url }}">{{ tag.name|title }}</a> </dd> <!--using get_absolute method for accessing the detail view of tag,this method defines the detail view in models.py file, show tag name using title filter where first letter of word is capital -->
+           {% endfor %}
+      </dl>
+
+      {{ startup.description|linebreaks }} <!--using linebreaks filter you don't need to use paragraph tag,create newline after each line -->
+      <!--a startup has one newslink but a newslink has multiple startups,here access just one newslink of a startup(one to many relationship) -->
+        {% if startup.newslink_set.all %} <!--if the all startup of a newslink is True -->
+            <section>
+                <h3>Recent News</h3>
+                <ul>
+                    {% for newslink in startup.newslink_set.all %} <!--print just one newslink,because there are one newslink in a startup but there are multiple startup in one newslink -->
+                    <li> <a href="{{ newslink.link }}">{{ newslink.title|title }}</a> </li> <!--show newslink title as a title format -->
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+        {% if startup.blog_posts.all %} <!--a startup has multiple blog posts,and we access all of blog posts of a startup -->
+            <section>
+                <h3>Blog Post {{ startup.blog_posts.all|pluralize }}</h3>
+                <ul>
+                    {% for post in startup.blog_posts.all %} <!--show all of posts related to a startup -->
+                     <li>
+                         <a href="{{ post.get_absolute_url }}">{{ post.title|title }}</a> <!--using get_absolute method for accessing the detail view of post,this method defines the detail view in models.py file -->
+                     </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+  </article>
+{% endblock %}
